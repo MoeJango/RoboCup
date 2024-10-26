@@ -17,3 +17,51 @@ def GenerateBasicFormation():
     ]
 
     return formation
+
+def BuildUpFirst():
+    formation = [
+        np.array([-13, 0]),    # Goalkeeper
+        np.array([-12, -4.5]),  # Left Defender
+        np.array([-12, 3]),   # Center Back Left
+        np.array([-8, -6]),    # Center Back Right
+        np.array([-7, 7]),   # Right Defender
+        np.array([-5, 9]),    # Left Midfielder
+        np.array([-4, 0]),    # Center Midfielder Left
+        np.array([-1, 3]),     # Center Midfielder Right
+        np.array([1, 7]),     # Right Midfielder
+        np.array([3, 1]),    # Forward Left
+        np.array([2, -4])      # Forward Right
+    ]
+    return formation
+
+def BuildUpSecond():
+    formation = [
+        np.array([-13, 0]),    # Goalkeeper
+        np.array([-12, -4]),  # Left Defender
+        np.array([-12, 4]),   # Center Back Left
+        np.array([-7, 7]),    # Center Back Right
+        np.array([-7, -7]),   # Right Defender
+        np.array([-4, 2]),    # Left Midfielder
+        np.array([-3, -4]),    # Center Midfielder Left
+        np.array([1, 0]),     # Center Midfielder Right
+        np.array([5, -1]),     # Right Midfielder
+        np.array([4, -8]),    # Forward Left
+        np.array([7, 6])      # Forward Right
+    ]
+    return formation
+
+def BuildUpLast():
+    formation = [
+        np.array([-13, 0]),    # Goalkeeper
+        np.array([-10, -4]),  # Left Defender
+        np.array([-10, 4]),   # Center Back Left
+        np.array([-5, 7]),    # Center Back Right
+        np.array([-5, -7]),   # Right Defender
+        np.array([-2, 3]),    # Left Midfielder
+        np.array([1, -4]),    # Center Midfielder Left
+        np.array([3, 0]),     # Center Midfielder Right
+        np.array([9, -1]),     # Right Midfielder
+        np.array([12, -8]),    # Forward Left
+        np.array([10, 6])      # Forward Right
+    ]
+    return formation

@@ -102,3 +102,40 @@ class Strategy():
 
         return target_dir
     
+    def is_obstacle(self, x, y):
+        for opp in self.opponent_positions:
+            if opp is not None:
+                if x-1.5 <= opp[0] <= x+1.5  and  y-1.5 <= opp[1] <= y+1.5:
+                    return True
+        return False
+
+    def lineOfSight(self, target):
+        x0 = self.mypos[0]
+        x1 = target[0]
+        y0 = self.mypos[1]
+        y1 = target[1]
+        dx = abs(x1 - x0)
+        dy = abs(y1 - y0)
+        sx = 1 if x0 < x1 else -1
+        sy = 1 if y0 < y1 else -1
+        err = dx - dy
+
+        while True:
+            for opp in self.opponent_positions:
+                if opp is not None:
+                    if x0-1.5 <= opp[0] <= x0+1.5  and  y0-1.5 <= opp[1] <= y0+1.5:
+                        return False
+            
+            if x0==x1 and y0==y1:
+                break
+
+            e2 = 2*err
+            if e2 >= -dy:
+                err -= dy
+                x0 += sx
+            if e2 <= dx:
+                err += dx
+                y0 += sy
+        return True
+    
+    

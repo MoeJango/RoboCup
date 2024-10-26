@@ -8,6 +8,9 @@ from strategy.Assignment import pass_reciever_selector
 from strategy.Strategy import Strategy 
 
 from formation.Formation import GenerateBasicFormation
+from formation.Formation import BuildUpFirst
+from formation.Formation import BuildUpSecond
+from formation.Formation import BuildUpLast
 
 
 class Agent(Base_Agent):
@@ -227,7 +230,7 @@ class Agent(Base_Agent):
         else:
             drawer.clear("status")
 
-        formation_positions = GenerateBasicFormation()
+        formation_positions = BuildUpLast()
         point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
         strategyData.my_desired_position = point_preferences[strategyData.player_unum]
         strategyData.my_desried_orientation = strategyData.GetDirectionRelativeToMyPositionAndTarget(strategyData.my_desired_position)
