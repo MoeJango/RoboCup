@@ -4,7 +4,6 @@ import math
 import numpy as np
 
 from strategy.Assignment import role_assignment
-from strategy.Assignment import pass_reciever_selector
 from strategy.Strategy import Strategy 
 
 from formation.Formation import GenerateBasicFormation
@@ -254,7 +253,7 @@ class Agent(Base_Agent):
 
 
         if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
-            target = pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
+            target = strategyData.pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
             drawer.line(strategyData.mypos, target, 2,drawer.Color.red,"pass line")
             return self.kickTarget(strategyData,strategyData.mypos,target)
         else:

@@ -102,12 +102,6 @@ class Strategy():
 
         return target_dir
     
-    def is_obstacle(self, x, y):
-        for opp in self.opponent_positions:
-            if opp is not None:
-                if x-1.5 <= opp[0] <= x+1.5  and  y-1.5 <= opp[1] <= y+1.5:
-                    return True
-        return False
 
     def lineOfSight(self, target):
         x0 = self.mypos[0]
@@ -138,4 +132,36 @@ class Strategy():
                 y0 += sy
         return True
     
-    
+    def pass_reciever_selector(self, player_unum, teammate_positions, final_target):
+        if np.linalg.norm(teammate_positions[player_unum-1]-final_target) and self.lineOfSight(final_target):
+            currTarget = final_target
+        else:
+            options = []
+            for i in range(len(teammate_positions)):
+                if i != player_unum-1:
+                    if self.lineOfSight(teammate_positions[i]):
+                        if np.linalg.norm(teammate_positions[player_unum-1]-teammate_positions[i] < 7):
+                            options.append(teammate_positions[i])
+
+            if not options:
+                if -15 < teammate_positions[player_unum-1][0] < 15:
+                    newX = teammate_positions[player_unum-1][0]+1
+                else:
+                    newX = teammate_positions[player_unum-1][0]
+                if teammate_positions[player_unum-1][1] <= 0:
+                    newY = teammate_positions[player_unum-1][1]+1
+                else:
+                    newY = teammate_positions[player_unum-1][1]-1
+                currTarget = [newX, newY]
+            else:
+                currTarget = options[0]
+                currX = float('-inf')
+                for pos in options:
+                    if pos[0] > currX:
+                        currTarget = pos
+                        currX = pos[0]
+        
+        target = currTarget
+
+        return currTarget
+
