@@ -14,6 +14,8 @@ from formation.Formation import BuildUpLast
 from formation.Formation import lowBlock
 from formation.Formation import midBlock
 from formation.Formation import highBlock
+from formation.Formation import ourCorner
+from formation.Formation import theirCorner
 
 
 class Agent(Base_Agent):
@@ -246,6 +248,28 @@ class Agent(Base_Agent):
                 return self.move((x, y), orientation=strategyData.ball_dir)
             else:
                 return self.move(self.init_pos, orientation=strategyData.ball_dir)
+        elif strategyData.PM == self.world.M_THEIR_CORNER_KICK:
+            formation_positions = theirCorner(self.slow_ball_pos)
+            point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
+            strategyData.my_desired_position = point_preferences[strategyData.player_unum]
+            strategyData.my_desried_orientation = strategyData.ball_dir
+            return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
+        elif strategyData.PM == self.world.M_OUR_CORNER_KICK:
+            formation_positions = ourCorner(self.slow_ball_pos)
+            point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
+            strategyData.my_desired_position = point_preferences[strategyData.player_unum]
+            strategyData.my_desried_orientation = strategyData.ball_dir
+
+            if not strategyData.IsFormationReady(point_preferences):
+                return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
+            
+            if strategyData.active_player_unum == strategyData.robot_model.unum:
+                if self.slow_ball_pos[0] < 1:
+                    return self.kickTarget(strategyData,strategyData.mypos,(12, -8))
+                return self.kickTarget(strategyData,strategyData.mypos,(12, 8))
+            else:
+                return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
+
         #------------------------------------------------------
         #Role Assignment
         if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 

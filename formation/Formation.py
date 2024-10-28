@@ -174,3 +174,38 @@ def highBlock(opponents, ballPos, ballDir, myGoalDir):
         formation.append(target)
     
     return formation
+
+def theirCorner(ballPos):
+    if ballPos[1] < 0:
+        formation = [np.array(-14.7, -1)]
+    else:
+        formation = [np.array(-14.7, 1)]
+    for i in range(10):
+        x_range = (-14, -10)
+        y_range = (-5, 5)
+
+        x = np.random.uniform(x_range[0], x_range[1])
+        y = np.random.uniform(y_range[0], y_range[1])
+
+        formation.append(np.array([x, y]))
+
+    return formation
+
+def ourCorner(ballPos):
+    formation = [np.array([-14, 0])]
+    formation.append(np.array([ballPos[0]-0.5, ballPos[1]]))
+    if ballPos[1] < 0:
+        formation.append(np.array([12, -8]))
+    else:
+        formation.append(np.array([12, 8]))
+
+    for i in range(9):
+        x_range = (10, 14)
+        y_range = (-5, 5)
+
+        x = np.random.uniform(x_range[0], x_range[1])
+        y = np.random.uniform(y_range[0], y_range[1])
+
+        formation.append(np.array([x, y]))
+
+    return formation
