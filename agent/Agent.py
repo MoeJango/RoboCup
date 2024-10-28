@@ -243,19 +243,19 @@ class Agent(Base_Agent):
                 return self.move(self.init_pos, orientation=strategyData.ball_dir)
         elif strategyData.play_mode == self.world.M_THEIR_FREE_KICK or strategyData.play_mode == self.world.M_THEIR_KICK_IN:
             if strategyData.active_player_unum == strategyData.robot_model.unum:
-                x = self.slow_ball_pos[0] - math.sqrt(5/2)*math.cos(strategyData.ball_dir)
-                y = self.slow_ball_pos[1] - math.sqrt(5/2)*math.sin(strategyData.ball_dir)
+                x = strategyData.slow_ball_pos[0] - 5*math.cos(strategyData.ball_dir)
+                y = strategyData.slow_ball_pos[1] - 5*math.sin(strategyData.ball_dir)
                 return self.move((x, y), orientation=strategyData.ball_dir)
             else:
                 return self.move(self.init_pos, orientation=strategyData.ball_dir)
         elif strategyData.play_mode == self.world.M_THEIR_CORNER_KICK:
-            formation_positions = theirCorner(self.slow_ball_pos)
+            formation_positions = theirCorner(strategyData.slow_ball_pos)
             point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
             strategyData.my_desired_position = point_preferences[strategyData.player_unum]
             strategyData.my_desried_orientation = strategyData.ball_dir
             return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
         elif strategyData.play_mode == self.world.M_OUR_CORNER_KICK:
-            formation_positions = ourCorner(self.slow_ball_pos)
+            formation_positions = ourCorner(strategyData.slow_ball_pos)
             point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
             strategyData.my_desired_position = point_preferences[strategyData.player_unum]
             strategyData.my_desried_orientation = strategyData.ball_dir
@@ -264,7 +264,7 @@ class Agent(Base_Agent):
                 return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
             
             if strategyData.active_player_unum == strategyData.robot_model.unum:
-                if self.slow_ball_pos[0] < 1:
+                if strategyData.slow_ball_pos[0] < 1:
                     return self.kickTarget(strategyData,strategyData.mypos,(12, -8))
                 return self.kickTarget(strategyData,strategyData.mypos,(12, 8))
             else:
@@ -313,7 +313,7 @@ class Agent(Base_Agent):
                         y = 1
                     strategyData.my_desired_position = (12, y)
                     strategyData.my_desried_orientation = strategyData.ball_dir
-            elif not strategyData.lineOfSight(strategyData.slow_ball_pos):
+            elif not strategyData.lineOfSight(strategyData.slow_ball_pos) and strategyData.IsFormationReady(point_preferences):
                 if strategyData.mypos[1] < 0:
                     y = strategyData.mypos[1] + 1
                 else:

@@ -154,16 +154,18 @@ class Strategy():
     
     def pass_reciever_selector(self, player_unum, teammate_positions, final_target):
         goalDist = np.linalg.norm(self.slow_ball_pos-np.array(final_target))
-        if 4 < goalDist < 7 and self.lineOfSight((12, 0)) and self.teamInBox():
-            currTarget = (12, 0)
-        elif goalDist <= 4 and self.lineOfSight(final_target):
+        if goalDist <= 5 and self.lineOfSight(final_target):
+            print('goal: ', goalDist)
             currTarget = final_target
+        elif 5 < goalDist < 8 and self.lineOfSight((12, 0)) and self.teamInBox():
+            print('throughball: ', goalDist)
+            currTarget = (12, 0)
         else:
             options = []
             for i in range(len(teammate_positions)):
                 if i != player_unum-1 and teammate_positions[i] is not None:
                     if self.lineOfSight(teammate_positions[i]):
-                        if np.linalg.norm(np.array(self.slow_ball_pos)-np.array(teammate_positions[i])) < 8:
+                        if np.linalg.norm(self.slow_ball_pos-np.array(teammate_positions[i])) < 8:
                             options.append(teammate_positions[i])
 
             if not options:

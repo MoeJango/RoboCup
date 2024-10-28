@@ -71,8 +71,8 @@ def BuildUpLast():
 def lowBlock(opponents, ballPos, ballDir, myGoalDir):
     formation = [np.array([-14, 0])]
     formation.append(ballPos)
-    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
-    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    blockingPosX = ballPos[0] + 2*cos(myGoalDir)
+    blockingPosY = ballPos[1] + 2*sin(myGoalDir)
     formation.append(np.array([blockingPosX, blockingPosY]))  
     for opp in opponents:
         if opp[0] <= -5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
@@ -107,8 +107,8 @@ def lowBlock(opponents, ballPos, ballDir, myGoalDir):
 def midBlock(opponents, ballPos, ballDir, myGoalDir):
     formation = [np.array([-14, 0])]
     formation.append(ballPos)
-    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
-    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    blockingPosX = ballPos[0] + 2*cos(myGoalDir)
+    blockingPosY = ballPos[1] + 2*sin(myGoalDir)
     formation.append(np.array([blockingPosX, blockingPosY]))  
     for opp in opponents:
         if -7 <= opp[0] <= 5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
@@ -143,8 +143,8 @@ def midBlock(opponents, ballPos, ballDir, myGoalDir):
 def highBlock(opponents, ballPos, ballDir, myGoalDir):
     formation = [np.array([-14, 0])]
     formation.append(ballPos)
-    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
-    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    blockingPosX = ballPos[0] + 2*cos(myGoalDir)
+    blockingPosY = ballPos[1] + 2*sin(myGoalDir)
     formation.append(np.array([blockingPosX, blockingPosY]))  
     for opp in opponents:
         if 5 <= opp[0] <= 12 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
@@ -176,10 +176,11 @@ def highBlock(opponents, ballPos, ballDir, myGoalDir):
     return formation
 
 def theirCorner(ballPos):
+    formation = []
     if ballPos[1] < 0:
-        formation = [np.array(-14.7, -1)]
+        formation.append(np.array([-14.7, -1]))
     else:
-        formation = [np.array(-14.7, 1)]
+        formation.append(np.array([-14.7, 1]))
     for i in range(10):
         x_range = (-14, -10)
         y_range = (-5, 5)
@@ -199,7 +200,7 @@ def ourCorner(ballPos):
     else:
         formation.append(np.array([12, 8]))
 
-    for i in range(9):
+    for i in range(8):
         x_range = (10, 14)
         y_range = (-5, 5)
 
