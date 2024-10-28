@@ -4,6 +4,7 @@ import math
 import numpy as np
 
 from strategy.Assignment import role_assignment
+from strategy.Assignment import pass_reciever_selector
 from strategy.Strategy import Strategy 
 
 from formation.Formation import GenerateBasicFormation
@@ -229,17 +230,42 @@ class Agent(Base_Agent):
         else:
             drawer.clear("status")
 
-        formation_positions = BuildUpLast()
+        if strategyData.slow_ball_pos[0] < -5:
+            formation_positions = BuildUpFirst()
+        if -5 <= strategyData.slow_ball_pos[0] <= 0:
+            formation_positions = BuildUpSecond()
+        if strategyData.slow_ball_pos[0] > 0:
+            formation_positions = BuildUpLast()
+        
         point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
-        strategyData.my_desired_position = point_preferences[strategyData.player_unum]
-        strategyData.my_desried_orientation = strategyData.GetDirectionRelativeToMyPositionAndTarget(strategyData.my_desired_position)
+
+        if strategyData.mypos[0] >= 7 and strategyData.slow_ball_pos[0] >= 7:
+                if strategyData.mypos[1] < 0:
+                    y = -1
+                else:
+                    y = 1
+                strategyData.my_desired_position = (12, y)
+                strategyData.my_desried_orientation = strategyData.ball_dir
+        elif not strategyData.lineOfSight(strategyData.slow_ball_pos):
+            if strategyData.mypos[1] < 0:
+                y = strategyData.mypos[1] + 1
+            else:
+                y = strategyData.mypos[1] - 1
+            x = strategyData.mypos[0]
+            strategyData.my_desired_position = (x, y)
+            strategyData.my_desried_orientation = strategyData.ball_dir
+        else:
+            strategyData.my_desired_position = point_preferences[strategyData.player_unum]
+            strategyData.my_desried_orientation = strategyData.ball_dir
 
         drawer.line(strategyData.mypos, strategyData.my_desired_position, 2,drawer.Color.blue,"target line")
 
         if not strategyData.IsFormationReady(point_preferences):
+            if strategyData.active_player_unum == strategyData.robot_model.unum:
+                target = strategyData.pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
+                drawer.line(strategyData.mypos, target, 2,drawer.Color.red,"pass line")
+                return self.kickTarget(strategyData,strategyData.mypos,target)
             return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
-        #else:
-        #     return self.move(strategyData.my_desired_position, orientation=strategyData.ball_dir)
 
 
     

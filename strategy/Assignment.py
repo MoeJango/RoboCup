@@ -124,6 +124,7 @@ def pass_reciever_selector(player_unum, teammate_positions, final_target):
     #-----------------------------------------------------------#
 
     # Example
+    pass_reciever_unum = player_unum + 1 
 
     if pass_reciever_unum != 12:
         target = teammate_positions[pass_reciever_unum-1] #This is 0 indexed so we actually need to minus 1 

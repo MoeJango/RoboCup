@@ -120,8 +120,20 @@ class Strategy():
                     if x0-1.5 <= opp[0] <= x0+1.5  and  y0-1.5 <= opp[1] <= y0+1.5:
                         return False
             
-            if x0==x1 and y0==y1:
-                break
+            if sx == 1:
+                if sy == 1:
+                    if x0 >= x1 and y0 >= y1:
+                        break
+                else:
+                    if x0 >= x1 and y0 <= y1:
+                        break
+            else:
+                if sy == 1:
+                    if x0 <= x1 and y0 >= y1:
+                        break
+                else:
+                    if x0 <= x1 and y0 <= y1:
+                        break
 
             e2 = 2*err
             if e2 >= -dy:
@@ -133,14 +145,16 @@ class Strategy():
         return True
     
     def pass_reciever_selector(self, player_unum, teammate_positions, final_target):
-        if np.linalg.norm(teammate_positions[player_unum-1]-final_target) and self.lineOfSight(final_target):
+        if 4 < np.linalg.norm(self.slow_ball_pos-np.array(final_target)) < 7 and self.lineOfSight(final_target):
+            currTarget = (12, 0)
+        elif np.linalg.norm(self.slow_ball_pos-np.array(final_target)) <= 4 and self.lineOfSight(final_target):
             currTarget = final_target
         else:
             options = []
             for i in range(len(teammate_positions)):
-                if i != player_unum-1:
+                if i != player_unum-1 and teammate_positions[i] is not None:
                     if self.lineOfSight(teammate_positions[i]):
-                        if np.linalg.norm(teammate_positions[player_unum-1]-teammate_positions[i] < 7):
+                        if np.linalg.norm(np.array(self.slow_ball_pos)-np.array(teammate_positions[i])) < 10:
                             options.append(teammate_positions[i])
 
             if not options:
@@ -152,6 +166,7 @@ class Strategy():
                     newY = teammate_positions[player_unum-1][1]+1
                 else:
                     newY = teammate_positions[player_unum-1][1]-1
+
                 currTarget = [newX, newY]
             else:
                 currTarget = options[0]
@@ -163,5 +178,5 @@ class Strategy():
         
         target = currTarget
 
-        return currTarget
+        return target
 
