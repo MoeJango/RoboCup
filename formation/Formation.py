@@ -90,13 +90,13 @@ def lowBlock(opponents, ballPos, ballDir, myGoalDir):
         if i == 3:
             target = np.array([-8, -6])
         if i == 4:
-            target = np.array([-5, 9])
-        if i == 5:
             target = np.array([-7, 7])
+        if i == 5:
+            target = np.array([-5, 9])
         if i == 6:
             target = np.array([-1, 3])
         if i == 7:
-            target = np.array([1, 7])
+            target = np.array([1, 5])
         i +=1
 
         formation.append(target)
@@ -111,7 +111,7 @@ def midBlock(opponents, ballPos, ballDir, myGoalDir):
     blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
     formation.append(np.array([blockingPosX, blockingPosY]))  
     for opp in opponents:
-        if opp[0] <= 5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
+        if -7 <= opp[0] <= 5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
             formation.append(np.array(opp))
         if len(formation) == 7:
             break

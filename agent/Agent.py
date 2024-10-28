@@ -11,6 +11,9 @@ from formation.Formation import GenerateBasicFormation
 from formation.Formation import BuildUpFirst
 from formation.Formation import BuildUpSecond
 from formation.Formation import BuildUpLast
+from formation.Formation import lowBlock
+from formation.Formation import midBlock
+from formation.Formation import highBlock
 
 
 class Agent(Base_Agent):
@@ -223,17 +226,53 @@ class Agent(Base_Agent):
 
         target = (15,0) # Opponents Goal
 
+        if strategyData.PM == self.world.M_GAME_OVER:
+            pass
+        elif strategyData.PM_GROUP == self.world.MG_ACTIVE_BEAM:
+            self.beam()
+        elif strategyData.PM_GROUP == self.world.MG_PASSIVE_BEAM:
+            self.beam(True) # avoid center circle
+        elif strategyData.PM == self.world.M_THEIR_KICKOFF:
+            return self.move(self.init_pos, orientation=strategyData.ball_dir)
+        elif strategyData.PM == self.world.M_OUR_KICKOFF:
+            if strategyData.active_player_unum == strategyData.robot_model.unum:
+                return self.kickTarget(strategyData, strategyData.mypos, (-15, 0))
+            else:
+                return self.move(self.init_pos, orientation=strategyData.ball_dir)
+        elif strategyData.PM == self.world.M_THEIR_FREE_KICK or strategyData.PM == self.world.M_THEIR_KICK_IN:
+            if strategyData.active_player_unum == strategyData.robot_model.unum:
+                x = self.slow_ball_pos[0] - math.sqrt(5/2)*math.cos(strategyData.ball_dir)
+                y = self.slow_ball_pos[1] - math.sqrt(5/2)*math.sin(strategyData.ball_dir)
+                return self.move((x, y), orientation=strategyData.ball_dir)
+            else:
+                return self.move(self.init_pos, orientation=strategyData.ball_dir)
         #------------------------------------------------------
         #Role Assignment
+        if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
+                drawer.annotation((0,10.5), "Role Assignment Phase" , drawer.Color.yellow, "status")
+        else:
+            drawer.clear("status")
+
         if strategyData.min_opponent_ball_dist + 0.5 < strategyData.min_teammate_ball_dist: # defend
+            myGoalDir = M.target_abs_angle(strategyData.slow_ball_pos, (-15, 0), is_rad=True)
+            if strategyData.slow_ball_pos[0] < -5:
+                formation_positions = lowBlock(strategyData.opponent_positions, strategyData.slow_ball_pos, strategyData.ball_dir, myGoalDir)
+            if -5 <= strategyData.slow_ball_pos[0] <= 3:
+                formation_positions = midBlock(strategyData.opponent_positions, strategyData.slow_ball_pos, strategyData.ball_dir, myGoalDir)
+            if strategyData.slow_ball_pos[0] > 3:
+                formation_positions = highBlock(strategyData.opponent_positions, strategyData.slow_ball_pos, strategyData.ball_dir, myGoalDir)
+            
+            point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
+            strategyData.my_desired_position = point_preferences[strategyData.player_unum]
+            strategyData.my_desried_orientation = strategyData.ball_dir
+
+            if strategyData.active_player_unum == strategyData.robot_model.unum:
+                return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation, is_aggressive=True)
+            else:
+                return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
             
 
         else:
-            if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
-                drawer.annotation((0,10.5), "Role Assignment Phase" , drawer.Color.yellow, "status")
-            else:
-                drawer.clear("status")
-
             if strategyData.slow_ball_pos[0] < -5:
                 formation_positions = BuildUpFirst()
             if -5 <= strategyData.slow_ball_pos[0] <= 0:
