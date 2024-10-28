@@ -1,4 +1,5 @@
 import numpy as np
+from math import sin, cos, sqrt
 
 def GenerateBasicFormation():
 
@@ -67,3 +68,109 @@ def BuildUpLast():
     return formation
 
 
+def lowBlock(opponents, ballPos, ballDir, myGoalDir):
+    formation = [np.array([-14, 0])]
+    formation.append(ballPos)
+    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
+    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    formation.append(np.array([blockingPosX, blockingPosY]))  
+    for opp in opponents:
+        if opp[0] <= -5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
+            formation.append(np.array(opp))
+        if len(formation) == 11:
+            break
+    i = 0
+    while len(formation) < 11:
+        if i == 0:
+            target = np.array([-12, -4.5])
+        if i == 1:
+            target = np.array([-12, 3])
+        if i == 2:
+            target = np.array([-4, 0])
+        if i == 3:
+            target = np.array([-8, -6])
+        if i == 4:
+            target = np.array([-5, 9])
+        if i == 5:
+            target = np.array([-7, 7])
+        if i == 6:
+            target = np.array([-1, 3])
+        if i == 7:
+            target = np.array([1, 7])
+        i +=1
+
+        formation.append(target)
+    
+    return formation
+
+
+def midBlock(opponents, ballPos, ballDir, myGoalDir):
+    formation = [np.array([-14, 0])]
+    formation.append(ballPos)
+    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
+    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    formation.append(np.array([blockingPosX, blockingPosY]))  
+    for opp in opponents:
+        if opp[0] <= 5 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
+            formation.append(np.array(opp))
+        if len(formation) == 7:
+            break
+    i = 0
+    while len(formation) < 11:
+        if i == 0:
+            target = np.array([-12, -4])
+        if i == 1:
+            target = np.array([-12, 4])
+        if i == 2:
+            target = np.array([-7, 7])
+        if i == 3:
+            target = np.array([-4, 2])
+        if i == 4:
+            target = np.array([-7, -7])
+        if i == 5:
+            target = np.array([-3, -4])
+        if i == 6:
+            target = np.array([1, 0])
+        if i == 7:
+            target = np.array([6, -1])
+        i +=1
+
+        formation.append(target)
+    
+    return formation
+
+
+def highBlock(opponents, ballPos, ballDir, myGoalDir):
+    formation = [np.array([-14, 0])]
+    formation.append(ballPos)
+    blockingPosX = ballPos[0] + sqrt(2)*cos(myGoalDir)
+    blockingPosY = ballPos[1] + sqrt(2)*sin(myGoalDir)
+    formation.append(np.array([blockingPosX, blockingPosY]))  
+    for opp in opponents:
+        if 5 <= opp[0] <= 12 and not (ballPos[0]-1.5 < opp[0] < ballPos[0]+1.5 and ballPos[1]-1.5 < opp[1] < ballPos[1]+1.5):
+            formation.append(np.array(opp))
+        if len(formation) == 5:
+            break
+    i = 0
+    while len(formation) < 11:
+        if i == 0:
+            target = np.array([-9, -4])
+        if i == 1:
+            target = np.array([-9, 4])
+        if i == 2:
+            target = np.array([0, 3])
+        if i == 3:
+            target = np.array([-2, 7])
+        if i == 4:
+            target = np.array([-2, -7])
+        if i == 5:
+            target = np.array([3, -4])
+        if i == 6:
+            target = np.array([1, 0])
+        if i == 7:
+            target = np.array([5, 0])
+        i +=1
+
+        formation.append(target)
+    
+    return formation

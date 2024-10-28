@@ -144,28 +144,37 @@ class Strategy():
                 y0 += sy
         return True
     
+    def teamInBox(self):
+        teammates = self.teammate_positions
+        for i in range(len(teammates)):
+            if i != self.player_unum-1:
+                if teammates[i][0] >= 10 and (-4 <= teammates[i][1] <= 4):
+                    return True
+        return False
+    
     def pass_reciever_selector(self, player_unum, teammate_positions, final_target):
-        if 4 < np.linalg.norm(self.slow_ball_pos-np.array(final_target)) < 7 and self.lineOfSight(final_target):
+        goalDist = np.linalg.norm(self.slow_ball_pos-np.array(final_target))
+        if 4 < goalDist < 7 and self.lineOfSight((12, 0)) and self.teamInBox():
             currTarget = (12, 0)
-        elif np.linalg.norm(self.slow_ball_pos-np.array(final_target)) <= 4 and self.lineOfSight(final_target):
+        elif goalDist <= 4 and self.lineOfSight(final_target):
             currTarget = final_target
         else:
             options = []
             for i in range(len(teammate_positions)):
                 if i != player_unum-1 and teammate_positions[i] is not None:
                     if self.lineOfSight(teammate_positions[i]):
-                        if np.linalg.norm(np.array(self.slow_ball_pos)-np.array(teammate_positions[i])) < 10:
+                        if np.linalg.norm(np.array(self.slow_ball_pos)-np.array(teammate_positions[i])) < 8:
                             options.append(teammate_positions[i])
 
             if not options:
                 if -15 < teammate_positions[player_unum-1][0] < 15:
-                    newX = teammate_positions[player_unum-1][0]+1
+                    newX = teammate_positions[player_unum-1][0]+0.5
                 else:
                     newX = teammate_positions[player_unum-1][0]
                 if teammate_positions[player_unum-1][1] <= 0:
-                    newY = teammate_positions[player_unum-1][1]+1
+                    newY = teammate_positions[player_unum-1][1]+0.5
                 else:
-                    newY = teammate_positions[player_unum-1][1]-1
+                    newY = teammate_positions[player_unum-1][1]-0.5
 
                 currTarget = [newX, newY]
             else:

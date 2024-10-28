@@ -225,66 +225,70 @@ class Agent(Base_Agent):
 
         #------------------------------------------------------
         #Role Assignment
-        if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
-            drawer.annotation((0,10.5), "Role Assignment Phase" , drawer.Color.yellow, "status")
+        if strategyData.min_opponent_ball_dist + 0.5 < strategyData.min_teammate_ball_dist: # defend
+            
+
         else:
-            drawer.clear("status")
-
-        if strategyData.slow_ball_pos[0] < -5:
-            formation_positions = BuildUpFirst()
-        if -5 <= strategyData.slow_ball_pos[0] <= 0:
-            formation_positions = BuildUpSecond()
-        if strategyData.slow_ball_pos[0] > 0:
-            formation_positions = BuildUpLast()
-        
-        point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
-
-        if strategyData.mypos[0] >= 7 and strategyData.slow_ball_pos[0] >= 7:
-                if strategyData.mypos[1] < 0:
-                    y = -1
-                else:
-                    y = 1
-                strategyData.my_desired_position = (12, y)
-                strategyData.my_desried_orientation = strategyData.ball_dir
-        elif not strategyData.lineOfSight(strategyData.slow_ball_pos):
-            if strategyData.mypos[1] < 0:
-                y = strategyData.mypos[1] + 1
+            if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
+                drawer.annotation((0,10.5), "Role Assignment Phase" , drawer.Color.yellow, "status")
             else:
-                y = strategyData.mypos[1] - 1
-            x = strategyData.mypos[0]
-            strategyData.my_desired_position = (x, y)
-            strategyData.my_desried_orientation = strategyData.ball_dir
-        else:
-            strategyData.my_desired_position = point_preferences[strategyData.player_unum]
-            strategyData.my_desried_orientation = strategyData.ball_dir
+                drawer.clear("status")
 
-        drawer.line(strategyData.mypos, strategyData.my_desired_position, 2,drawer.Color.blue,"target line")
+            if strategyData.slow_ball_pos[0] < -5:
+                formation_positions = BuildUpFirst()
+            if -5 <= strategyData.slow_ball_pos[0] <= 0:
+                formation_positions = BuildUpSecond()
+            if strategyData.slow_ball_pos[0] > 0:
+                formation_positions = BuildUpLast()
+            
+            point_preferences = role_assignment(strategyData.teammate_positions, formation_positions)
 
-        if not strategyData.IsFormationReady(point_preferences):
-            if strategyData.active_player_unum == strategyData.robot_model.unum:
+            if strategyData.mypos[0] >= 7 and strategyData.slow_ball_pos[0] >= 7:
+                    if strategyData.mypos[1] < 0:
+                        y = -1
+                    else:
+                        y = 1
+                    strategyData.my_desired_position = (12, y)
+                    strategyData.my_desried_orientation = strategyData.ball_dir
+            elif not strategyData.lineOfSight(strategyData.slow_ball_pos):
+                if strategyData.mypos[1] < 0:
+                    y = strategyData.mypos[1] + 1
+                else:
+                    y = strategyData.mypos[1] - 1
+                x = strategyData.mypos[0]
+                strategyData.my_desired_position = (x, y)
+                strategyData.my_desried_orientation = strategyData.ball_dir
+            else:
+                strategyData.my_desired_position = point_preferences[strategyData.player_unum]
+                strategyData.my_desried_orientation = strategyData.ball_dir
+
+            drawer.line(strategyData.mypos, strategyData.my_desired_position, 2,drawer.Color.blue,"target line")
+
+            if not strategyData.IsFormationReady(point_preferences):
+                if strategyData.active_player_unum == strategyData.robot_model.unum:
+                    target = strategyData.pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
+                    drawer.line(strategyData.mypos, target, 2,drawer.Color.red,"pass line")
+                    return self.kickTarget(strategyData,strategyData.mypos,target)
+                return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
+
+
+        
+            #------------------------------------------------------
+            #Pass Selector
+            if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
+                drawer.annotation((0,10.5), "Pass Selector Phase" , drawer.Color.yellow, "status")
+            else:
+                drawer.clear_player()
+
+
+
+            if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
                 target = strategyData.pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
                 drawer.line(strategyData.mypos, target, 2,drawer.Color.red,"pass line")
                 return self.kickTarget(strategyData,strategyData.mypos,target)
-            return self.move(strategyData.my_desired_position, orientation=strategyData.my_desried_orientation)
-
-
-    
-        #------------------------------------------------------
-        #Pass Selector
-        if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
-            drawer.annotation((0,10.5), "Pass Selector Phase" , drawer.Color.yellow, "status")
-        else:
-            drawer.clear_player()
-
-
-
-        if strategyData.active_player_unum == strategyData.robot_model.unum: # I am the active player 
-            target = strategyData.pass_reciever_selector(strategyData.player_unum, strategyData.teammate_positions, (15,0))
-            drawer.line(strategyData.mypos, target, 2,drawer.Color.red,"pass line")
-            return self.kickTarget(strategyData,strategyData.mypos,target)
-        else:
-            drawer.clear("pass line")
-            return self.move(strategyData.my_desired_position, orientation=strategyData.ball_dir)
+            else:
+                drawer.clear("pass line")
+                return self.move(strategyData.my_desired_position, orientation=strategyData.ball_dir)
             
 
 
